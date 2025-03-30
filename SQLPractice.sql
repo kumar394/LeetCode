@@ -102,3 +102,44 @@ SELECT OrderDate
 , SUM(OrderCount) OVER (ORDER BY OrderDate ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS CumulativeOrder
 FROM order
 GROUP BY OrderDate
+
+------ # of posts with more than 10 views in the past 7 days
+WITH cte AS 
+(SELECT post_id
+, SUM(view_count) AS view_total
+FROM content_view
+WHERE view_date_between CURRENT_DATE() AND DATE_SUB(CURRENT_DATE(), INTERVAL 5 DAY)
+GROUP BY 1
+)
+SELECT COUNT (post_id)
+FROM cte
+WHERE view_total > 10
+
+------What is the view prevalence of content we believe (with a high probability) to be "spam" or "scam" in last 30 days. View prevelence is defined as the number of views 
+---- of violating content divided by the total views 
+SELECT *
+, IF (violation_type IN ("spam", "scam") AND )
+FROM content_view AS c
+LEFT JOIN violating_contect AS v
+ON c.post_id = v.post_id
+WHERE view_date_between CURRENT_DATE() AND DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
+
+----- Your manager wants you to identify the VIP users. A user is considered a VIP if they have taken more than 3 loans each with amount greater than $20,000 in the past year. Write a SQL query to find these VIP users.
+WITH cte AS
+(
+SELECT customer_id
+, COUNT (loan_id) AS loan_count
+FROM loans
+WHERE 1=1
+-- AND EXTRACT (YEAR FROM loan_date) = 2024
+AND DATE_DIFF(CURRENT_DATE, loan_date, 'YEAR') > 1
+AND amount > 20000
+GROUP BY customer_id
+)
+SELECT customer_id
+FROM cte
+WHERE loan_count > 3
+
+
+
+
