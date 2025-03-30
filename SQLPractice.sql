@@ -140,6 +140,43 @@ SELECT customer_id
 FROM cte
 WHERE loan_count > 3
 
+----- write a SQL query to return the monthly average ratings for each product.
+SELECT product_id
+, EXTRACT (MONTH FROM submit_date) AS month_submit
+, AVG(stars) AS avg_rating
+FROM reviews
+GROUP BY 1,2
+
+------- Suppose you are asked to pull a list of all the customers that have taken a personal loan that is either "past due" or "charged off", and have an annual salary above $50,000. Additionally, you are also required to show only customers that are from California.
+SELECT p.customer_id
+, state
+, annual_income
+, loan_status
+FROM personal_loans AS p
+LEFT JOIN customers AS c
+ON p.customer_id = c.customer_id
+WHERE 1=1
+AND loan_status IN ("Past Due", "Charged Off")
+AND state = "California"
+AND annual_income > 50000
+
+------- Let's simulate a scenario where you are required to find the average loan amount taken by members.
+SELECT user_id
+, ROUND(AVG(loan_amount),2) AS avg_loan_amount
+FROM loans
+GROUP BY 1
+
+------- Finding Average Loan Amount by Loan Type
+SELECT loan_type
+, AVG(loan_amount) AS avg_loan_amount
+FROM loans
+WHERE 1=1
+-- AND DATE_DIFF(CURRENT_DATE, loan_issued_date, YEAR) < 1
+AND loan_issued_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR)
+GROUP BY loan_type
+
+
+
 
 
 
