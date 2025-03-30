@@ -60,3 +60,8 @@ def bin_min_max(str):
 
 s= "100,1,105,5,102,12,110,15,120,22,115,29"
 print(bin_min_max(s))
+
+a= "I am a good boy and have lot of toys"
+print (a.lower)
+
+
