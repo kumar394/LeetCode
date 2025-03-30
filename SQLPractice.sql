@@ -175,6 +175,24 @@ WHERE 1=1
 AND loan_issued_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR)
 GROUP BY loan_type
 
+----- Upstart is a leading AI lending platform that partners with banks to improve access to affordable credit. A part of their business is to understand how their loans are distributed among different customers in terms of loan size, occupation. They have two tables borrowers and loans.
+SELECT occupation
+, age
+, SUM (loan_size) AS loan_size
+, AVG (loan_size) AS loan_avg
+FROM borrowers AS b
+LEFT JOIN loans AS l
+ON b.borrower_id = l.borrower_id
+GROUP BY 1,2
+
+------Click Through Rate
+
+SELECT product_id
+, COUNT(DISTINCT c.user_id)*1.0 / COUNT(DISTINCT p.user_id) AS Conversion_Rate
+FROM product_views AS p
+LEFT JOIN cart_adds AS c
+ON p.product_id = c.product_id AND p.user_id = c.user_id
+GROUP BY 1
 
 
 
