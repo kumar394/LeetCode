@@ -65,3 +65,26 @@ a= "I am a good boy and have lot of toys"
 print (a.lower)
 
 
+def bigram(s):
+    """
+    This function returns bigrams
+    """
+    a = s.split(" ")
+    bg= [(a[i], a[i+1]) for i in range(len(a)-1)]
+    return bg
+
+
+sentence = "Have free hours and love children"
+print (bigram(sentence))
+
+def repeatchar (s):
+    a = []
+    for i in s:
+        if i in a:
+            return i
+        else:
+            a.append(i)  
+
+s = "interviewquery"
+
+print(repeatchar(s))
