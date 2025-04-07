@@ -88,3 +88,30 @@ def repeatchar (s):
 s = "interviewquery"
 
 print(repeatchar(s))
+
+def validparenthesis(s):
+
+    """
+    This function returns if the string is valid parenthesis
+    """
+    
+    map_paren= {"(":")", "{":"}", "[":"]"}
+    
+    stk= []
+    for i in s:
+        if i in map_paren.keys():
+            stk.append(i)
+            
+        elif i in map_paren.values() and stk:
+            last= stk.pop()
+            if i != map_paren[last]:
+                return False
+            
+        else:
+            return False
+        
+    if stk:
+        return False
+    
+    else:
+        return True
