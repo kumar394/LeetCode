@@ -115,3 +115,24 @@ def validparenthesis(s):
     
     else:
         return True
+    
+
+def revelem(s):
+    r= []
+    if len(s) ==0:
+        return r
+    else:
+        r.append(s[-1])
+        return r + revelem(s[:-1]) 
+    
+s = ["h","e","l","l","o"]
+print (revelem(s))
+
+def revint(a):
+    factor= -1 if a < 0 else 1
+    
+    rev = factor*int(str(abs(a))[::-1])
+    return rev
+
+a= -123
+print (revint(a))
