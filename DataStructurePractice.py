@@ -136,3 +136,32 @@ def revint(a):
 
 a= -123
 print (revint(a))
+
+
+def simulation():
+    
+    game = True
+    start = random.randint(0,1)
+#     print(start)
+    result= []
+    result.append(start)
+#     print(result)
+
+    while game:
+        
+        out= random.randint(0,1)
+        result.append(out)
+#         print(result)
+
+        if (result[-1] == 1) & (result[-2] == 1):
+            game= False
+            return "A Wins"
+
+        
+
+        elif (result[-1] == 0) & (result[-2] == 1):
+            game= False
+            return "B Wins"
+
+        else:
+            continue 
