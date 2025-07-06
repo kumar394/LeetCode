@@ -165,3 +165,33 @@ def simulation():
 
         else:
             continue 
+
+
+
+def next_word_predictor(s,word):
+
+    """
+    This function works like Markov Chain. It trains on a given string and predicts the next word for a given word.
+    """
+    split= s.replace(".", "").split()
+    ct= {}
+    for i in range(len(split)-1):
+        word= split[i]
+        next_word= split[i+1]
+        if word not in ct:
+            ct[word] = {}
+            ct[word][next_word] = 1
+        
+        else:
+            if next_word in ct[word]:
+                ct[word][next_word] = ct[word][next_word] + 1
+                
+            else:
+                ct[word][next_word] = 1
+
+    import random
+    return random.choice(list(ct["is"].keys()))
+
+s = "The sky is blue and sometimes it is dark as well. The land is green"
+word= "is"
+print(next_word_predictor(s,word))
