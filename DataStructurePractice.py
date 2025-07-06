@@ -168,7 +168,7 @@ def simulation():
 
 
 
-def next_word_predictor(s,word):
+def next_word_predictor(s,w):
 
     """
     This function works like Markov Chain. It trains on a given string and predicts the next word for a given word.
@@ -190,8 +190,15 @@ def next_word_predictor(s,word):
                 ct[word][next_word] = 1
 
     import random
-    return random.choice(list(ct["is"].keys()))
+    next_words= list(ct[w].keys())
+    freq = list(ct[w].values())
+
+    import numpy as np
+    prob = [np.round(x/sum(freq)) for x in freq]
+
+    return random.choices(next_words, weights=prob, k=1)[0]
 
 s = "The sky is blue and sometimes it is dark as well. The land is green"
 word= "is"
 print(next_word_predictor(s,word))
+
