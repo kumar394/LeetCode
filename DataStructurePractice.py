@@ -168,37 +168,19 @@ def simulation():
 
 
 
-def next_word_predictor(s,w):
+def missingnumber(a):
 
     """
-    This function works like Markov Chain. It trains on a given string and predicts the next word for a given word.
+    Given an array arr[] of size n-1 with distinct integers in the range of [1, n]. This array represents a permutation of the integers from 1 to n with one element missing. Find the missing element in the array.
     """
-    split= s.replace(".", "").split()
-    ct= {}
-    for i in range(len(split)-1):
-        word= split[i]
-        next_word= split[i+1]
-        if word not in ct:
-            ct[word] = {}
-            ct[word][next_word] = 1
-        
-        else:
-            if next_word in ct[word]:
-                ct[word][next_word] = ct[word][next_word] + 1
-                
-            else:
-                ct[word][next_word] = 1
 
-    import random
-    next_words= list(ct[w].keys())
-    freq = list(ct[w].values())
+    n = len(a) + 1
+    totalsum = sum(a)
 
-    import numpy as np
-    prob = [np.round(x/sum(freq)) for x in freq]
+    expectedsum = n*(n+1)//2
 
-    return random.choices(next_words, weights=prob, k=1)[0]
+    return expectedsum - totalsum
 
-s = "The sky is blue and sometimes it is dark as well. The land is green"
-word= "is"
-print(next_word_predictor(s,word))
 
+a = [8, 2, 4, 5, 3, 7, 1]
+print(missingnumber(a))
