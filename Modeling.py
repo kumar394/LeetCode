@@ -83,7 +83,15 @@ def data_prelim_stats(df, num, cat):
         top_freq.append(df_cat[i].value_counts()[:cat_n].index.tolist())
 
     # save the output
-    df_out_cat
+    df_out_cat["CatFeatures"] = Cat_Feat
+    df_out_cat["CatUnique"] = Cat_Unique
+    df_out_cat["DataAvailable"] = Cat_DataAvailable
+    df_out_cat["CatPercentage"] = Cat_Percentage
+    df_out_cat["CatMissing"] = Cat_Missing_Val
+    df_out_cat["CatMissingPercentage"] = Cat_Missing_Val_Per
+    df_out_cat["CatTop5"] = top_freq
+
+    return df_out_num, df_out_cat
 
         _
 
