@@ -94,7 +94,53 @@ def data_prelim_stats(df, num, cat):
     return df_out_num, df_out_cat
 
         _
+def fit_xgb_model (train, test, predictors, target, path, model_name, seed, monotonity):
+    """
+    This function fits a baseline xgboost algorithms with given parameters and returns a model object
+    """
 
+    x_train= train[predictors]
+    x_test= test[predictors]
+    y_train= train[target]
+    y_test= test[target]
 
+    params= {'booster': 'gbtree',
+            'objective': 'binary:logistic',
+            'eval_metric': 'auc',
+            'process_type': 'default',
+            'eta': 0.4,
+            'grow_policy': 'lossguide',
+            'tree_method': 'hist',
+            'max_depth': 6,
+            'max_leaves': 0,
+            'min_child_weight': 150,
+            'max_delta_step': 0,
+            'subsample': 0.8,
+            'colsample_bytree': 0.8,
+            'colsample_bylevel': 1,
+            'colsample_bynode': 1,
+            'gamma': 0,
+            'lambda': 1,
+            'alpha': 0,
+            'scale_pos_weight': 1,
+            'max_bin': 256,
+            'num_parallel_tree': 1,
+            'random_state': seed,
+            'monotone_constraints': monotonity,
+            'n_estimators': 400 
+    }
+
+    model = xgb.XGBClassifier((verbose = True,
+                            **params))
+
+    evaluation= [(x_train, y_train), (x_test, y_test)]
+
+    model= model.fit(x_train, y_train, eval_set= evaluation,
+                    early_stopping_rounds = 20
+                    )
+
+    pickle.dump(dump, open(path + "/{}.pkl".format(model_name), 'wb'))
+
+    return model
 
 
