@@ -183,4 +183,9 @@ def missingnumber(a):
 
 
 a = [8, 2, 4, 5, 3, 7, 1]
-print(missingnumber(a))
+# print(missingnumber(a))
+
+for i in range(len(a)-1):
+    for j in range(i+1, len(a)):
+        print(a[i], a[j])
+
