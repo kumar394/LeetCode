@@ -155,3 +155,79 @@ def feature_impotance(model_file):
     df_score["Gain"] = df_score['TotalGain']/df_score['TotalGain'].sum()
 
     return df_score 
+
+
+def perf_model_files (df_test, df_train, path,  target, pkl_list):
+
+    """
+    This function calculates auc from various model files in pkl format and then returns the result
+    """
+
+    result = {}
+
+    for file in pkl_list:
+
+        if file[-3:] == 'pkl':
+            a = {}
+
+            iteration_count = file[-10:-4]
+
+            storage_client = storage.Client()
+
+            bucket = storage_client.bucket('bucket_location')
+
+            blob_download = bucket.blob(path + "/{}".format(file))
+
+            pickle_in = blob_download.download_as_string()
+            model= pickle.loads(pickle_in)
+
+            train_auc = roc_auc_curve(df_train[target], model.predict(xgb.DMatrix(df_train[model.feature_names])))
+            test_auc = roc_auc_curve(df_test[target], model.predict(xgb.DMatrix(df_test[model.feature_names])))
+
+            a["train_auc"] = train_auc
+            a["test_auc"] = test_auc
+            a["predictors_count"]= len(model.feature_names)
+
+            result[iteration_count] = a
+
+        else:
+            continue
+
+    return result
+
+
+def bin_of_scores(df, score, bins):
+
+    df["cut_base_{}".format(score)] = pd.qcut(df[score], q= bins, precision = 6)
+    labels = [str[i] for i in range (1, df["cut_base_{}".format(score)].nunique() + 1, 1)]
+    df["bins_{}".format(score)] = pd.qcut(df[score], bins, labels = labels)
+
+    return df
+
+def bad_rate_bins(df, score, target):
+
+    return df.groupby(score)[target].mean().reset_index().rename(columns= {score:"ventile", target:"bad_rate"})
+
+def bad_capture_rate(df, score, prediction, bins):
+
+    df["cut_base"] = pd.qcut(df[prediction], q= bins, precision = 6)
+    labels = [str[i] for i in range (1, df["cut_base_{}".format(score)].nunique() + 1, 1)]
+    df["bins"] = pd.qcut(df[prediction], bins, labels = labels)
+
+    results = df.groupby(["cut_base"]).agg({pred: ["count"], target: ["sum"]}).reset_index()
+    results.columns= ["cut_base", 'base_total_count', 'base_bad_count']
+    results["base_good_count"]= results["base_total_count"] - results["base_bad_count"] 
+
+    results = results.sort_values(by= "cut_base", ascending = False).reset_index().drop('index', axis=1)
+
+    results["bad_rate"] = results["base_bad_count"]/results["base_total_count"]
+    bad_total = results["base_bad_count"].sum()
+    results["cumulative_total"] = results["base_total_count"].cumsum()
+    results["cumulative_bad"] = results["base_bad_count"].cumsum()
+    results["cumulative_precision"] = results["cumulative_bad"]/results["cumulative_total"]
+    results["bad_capture_rate_bin"] = results["base_bad_count"]/bad_total
+    results["bad_capture_rate_cumulative_bin"] = results["cumulative_bad"]/bad_total
+    results["precentile"] = results["base_total_count"].cumsum()/results["base_total_count"].sum()
+
+    return results
+    
