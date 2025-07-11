@@ -143,4 +143,15 @@ def fit_xgb_model (train, test, predictors, target, path, model_name, seed, mono
 
     return model
 
+def feature_impotance(model_file):
 
+    """
+    This function outputs feature importance of a given model from its binary file
+    """
+
+    score = model_file.get_booster().get_score(impotance_type = 'total_gain')
+    df_score= pd.DataFrame(list(scores.items())).sort_values(by=1, ascending = False).reset_index(drop= True)
+    df_score.columns = ['Feature', 'TotalGain']
+    df_score["Gain"] = df_score['TotalGain']/df_score['TotalGain'].sum()
+
+    return df_score 
