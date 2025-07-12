@@ -230,4 +230,27 @@ def bad_capture_rate(df, score, prediction, bins):
     results["precentile"] = results["base_total_count"].cumsum()/results["base_total_count"].sum()
 
     return results
+
+def feature_red_result_analysis(path):
+    """
+    saving feature reduction result in a dataframe
+    """
+    feat_reduction_result = json.load(open(path + "/feature_reduction_result.json"))
+    iter = []
+    feature_count= []
+    auc_train = []
+    auc_test = []
+    for i in feat_reduction_result.keys():
+        iter.append(i)
+        feature_count.append(feat_reduction_result[i]["predictor_count"])
+        auc_train.append(feat_reduction_result[i]["auc_train"])
+        auc_test.append(feat_reduction_result[i]["auc_test"])
+
+    df = pd.DataFrame({"iteration": iter,
+                       "features_count": feature_count,
+                       "auc_train": auc_train,
+                       "auc_test": auc_test})
     
+    df = df.sort_values("auc_test", ascending= False)
+
+    return df
